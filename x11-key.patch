@@ -1,0 +1,132 @@
+diff --git a/src/x11_window.c b/src/x11_window.c
+index 322349f0..ebd5ddcc 100644
+--- a/src/x11_window.c
++++ b/src/x11_window.c
+@@ -32,6 +32,9 @@
+ #include <X11/cursorfont.h>
+ #include <X11/Xmd.h>
+ 
++#include <X11/XKBlib.h>
++#include <X11/keysymdef.h>
++
+ #include <poll.h>
+ 
+ #include <string.h>
+@@ -241,6 +244,117 @@ static int translateKey(int scancode)
+     if (scancode < 0 || scancode > 255)
+         return GLFW_KEY_UNKNOWN;
+ 
++  KeySym sym =
++      XkbKeycodeToKeysym(_glfw.x11.display, scancode, _glfw.x11.xkb.group, 0);
++
++#define XKB_KEY(key) XK_##key
++#define GLFW_KEY(key) GLFW_KEY_##key
++#define SNIPPET(a, b)                                                          \
++  case XKB_KEY(a):                                                             \
++    return GLFW_KEY(b);
++#define SNIPPET1(a)                                                            \
++  case XKB_KEY(a):                                                             \
++    return GLFW_KEY(a);
++
++  switch (sym) {
++    SNIPPET(space, SPACE);
++    SNIPPET(apostrophe, APOSTROPHE);
++    SNIPPET(comma, COMMA);
++    SNIPPET(minus, MINUS);
++    SNIPPET(period, PERIOD);
++    SNIPPET(slash, SLASH);
++    SNIPPET1(0);
++    SNIPPET1(1);
++    SNIPPET1(2);
++    SNIPPET1(3);
++    SNIPPET1(4);
++    SNIPPET1(5);
++    SNIPPET1(6);
++    SNIPPET1(7);
++    SNIPPET1(8);
++    SNIPPET1(9);
++    SNIPPET(semicolon, SEMICOLON);
++    SNIPPET(equal, EQUAL);
++    SNIPPET(a, A);
++    SNIPPET(b, B);
++    SNIPPET(c, C);
++    SNIPPET(d, D);
++    SNIPPET(e, E);
++    SNIPPET(f, F);
++    SNIPPET(g, G);
++    SNIPPET(h, H);
++    SNIPPET(i, I);
++    SNIPPET(j, J);
++    SNIPPET(k, K);
++    SNIPPET(l, L);
++    SNIPPET(m, M);
++    SNIPPET(n, N);
++    SNIPPET(o, O);
++    SNIPPET(p, P);
++    SNIPPET(q, Q);
++    SNIPPET(r, R);
++    SNIPPET(s, S);
++    SNIPPET(t, T);
++    SNIPPET(u, U);
++    SNIPPET(v, V);
++    SNIPPET(w, W);
++    SNIPPET(x, X);
++    SNIPPET(y, Y);
++    SNIPPET(z, Z);
++    SNIPPET(bracketleft, LEFT_BRACKET);
++    SNIPPET(backslash, BACKSLASH);
++    SNIPPET(bracketright, RIGHT_BRACKET);
++    SNIPPET(grave, GRAVE_ACCENT);
++
++    SNIPPET(Escape, ESCAPE);
++    SNIPPET(Return, ENTER);
++    SNIPPET(Tab, TAB);
++    SNIPPET(BackSpace, BACKSPACE);
++    SNIPPET(Insert, INSERT);
++    SNIPPET(Delete, DELETE);
++    SNIPPET(Right, RIGHT);
++    SNIPPET(Left, LEFT);
++    SNIPPET(Down, DOWN);
++    SNIPPET(Up, UP);
++    SNIPPET(Page_Up, PAGE_UP);
++    SNIPPET(Page_Down, PAGE_DOWN);
++    SNIPPET(Home, HOME);
++    SNIPPET(End, END);
++    SNIPPET(Caps_Lock, CAPS_LOCK);
++    SNIPPET(Scroll_Lock, SCROLL_LOCK);
++    SNIPPET(Num_Lock, NUM_LOCK);
++    SNIPPET(Print, PRINT_SCREEN);
++    SNIPPET(Pause, PAUSE);
++    SNIPPET1(F1);
++    SNIPPET1(F2);
++    SNIPPET1(F3);
++    SNIPPET1(F4);
++    SNIPPET1(F5);
++    SNIPPET1(F6);
++    SNIPPET1(F7);
++    SNIPPET1(F8);
++    SNIPPET1(F9);
++    SNIPPET1(F10);
++    SNIPPET1(F11);
++    SNIPPET1(F12);
++    SNIPPET1(F13);
++    SNIPPET1(F14);
++    SNIPPET1(F15);
++    SNIPPET1(F16);
++    SNIPPET1(F17);
++    SNIPPET1(F18);
++    SNIPPET1(F19);
++    SNIPPET1(F20);
++    SNIPPET1(F21);
++    SNIPPET1(F22);
++    SNIPPET1(F23);
++    SNIPPET1(F24);
++    SNIPPET1(F25);
++
++  default:
++    break;
++  }
++
+     return _glfw.x11.keycodes[scancode];
+ }
+ 
